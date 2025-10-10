@@ -5,10 +5,10 @@ This repository contains the code and data accompanying the paper "Early and Acc
 ## Paper webpage
 
 The paper is available at https://pascalmichaillat.org/17/.
-<!-- 
-## Raw data
 
-The raw data used by the code to produce the results in the paper are stored as CSV files in the `raw` folder.
+## Input data
+
+The raw data used by the code to produce the results in the paper are stored as CSV files in the `input` folder.
 
 + `20210719_cycle_dates_pasted.csv` - US business cycle dates, 1857–2021
 	+ Source: [NBER (2023)](https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions)
@@ -18,15 +18,18 @@ The raw data used by the code to produce the results in the paper are stored as 
 	+ Source: [Barnichon (2010)](https://docs.google.com/spreadsheets/d/1fkMinSHkjTL99-bLZYFldQ8rHtgh8lxd)
 + `HistoricalSeries_JME_2020January.csv` - US unemployment and vacancy rates, 1890–2017
 	+ Source: [Petrosky-Nadeau and Zhang (2021)](https://drive.google.com/file/d/1NcuUMRR4_fOwJW6qHb-XxitVSXXONBHW)
++ `INDPRO.csv` - US industrial production index, 1919–2025
+	+ Source: [Federal Reserve Board (2025)](https://fred.stlouisfed.org/series/INDPRO)
 + `JTSJOL.csv` - US vacancy level, 2001–2025
 	+ Source: [BLS (2025b)](https://fred.stlouisfed.org/series/JTSJOL)
 + `UNEMPLOY.csv` - US unemployment level, 1948–2025
-	+ Source: [BLS (2025d)](https://fred.stlouisfed.org/series/UNEMPLOY)
+	+ Source: [BLS (2025c)](https://fred.stlouisfed.org/series/UNEMPLOY)
 	
 ## Code
 
 The results in the paper are obtained using MATLAB. The MATLAB code is located in the `code` folder.
 
+<!-- 
 ### Main script
 
 The main script, `main.m`, orchestrates the production of the results in the paper. The script collects the raw data, performs the computations, and produces the 8 figures and 2 tables presented in the paper.
@@ -89,6 +92,8 @@ The tables produced by the code are saved as CSV files. The numerical results as
 + `table1.csv`, `table1.md` - Table 1
 + `table2.csv`, `table2.md` - Table 2
 
+ -->
+
 ## Usage
 
 1. Clone the repository to your local machine using Git or by downloading the ZIP file.
@@ -101,8 +106,8 @@ The tables produced by the code are saved as CSV files. The numerical results as
 run('main.m')
 ```
 
-4. By default, the main script overwrites the files in the `results` folder. To preserve existing files, make a copy of the folder before running the script.
- -->
+4. By default, the main script overwrites the files in the `output` folder. To preserve existing files, make a copy of the folder before running the script.
+
 ## Software
 
 The results were obtained using MATLAB R2024b on macOS Sequoia (Apple silicon).
