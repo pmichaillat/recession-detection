@@ -1,6 +1,6 @@
-# Early and Accurate Recession Detection Using Classifiers on the Anticipation-Precision Frontier - Code and Data
+# Recession Detection Using Classifiers on the Anticipation-Precision Frontier - Code and Data
 
-This repository contains the code and data accompanying the paper "Early and Accurate Recession Detection Using Classifiers on the Anticipation-Precision Frontier", written by [Pascal Michaillat](https://pascalmichaillat.org), and posted on [arXiv](https://doi.org/10.48550/arXiv.2506.09664) in July 2025.
+This repository contains the code and data accompanying the paper "Recession Detection Using Classifiers on the Anticipation-Precision Frontier", written by [Pascal Michaillat](https://pascalmichaillat.org), and posted on [arXiv](https://doi.org/10.48550/arXiv.2506.09664) in July 2025.
 
 ## Paper webpage
 
