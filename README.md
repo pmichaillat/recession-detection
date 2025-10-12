@@ -1,6 +1,6 @@
-# Recession Detection Using Classifiers on the Anticipation-Precision Frontier - Code and Data
+# Early and Accurate Recession Detection Using Classifiers on the Anticipation-Precision Frontier - Code and Data
 
-This repository contains the code and data accompanying the paper "Recession Detection Using Classifiers on the Anticipation-Precision Frontier", written by [Pascal Michaillat](https://pascalmichaillat.org), and posted on [arXiv](https://doi.org/10.48550/arXiv.2506.09664) in July 2025.
+This repository contains the code and data accompanying the paper "Early and Accurate Recession Detection Using Classifiers on the Anticipation-Precision Frontier", written by [Pascal Michaillat](https://pascalmichaillat.org), and posted on [arXiv](https://doi.org/10.48550/arXiv.2506.09664) in July 2025.
 
 ## Paper webpage
 
@@ -70,9 +70,13 @@ Next, the main script produces the tables using the following scripts:
 
 The scripts display the tables in the MATLAB command window and save the tables as CSV file. The scripts also generate numerical results associated with the tables. The results are displayed in the command window and saved in Markdown files.
 
+ -->
+
 ## Results
 
-### Figures
+The results produced by the code from the raw data are stored as CSV and PDF files in the `output` folder.
+
+<!-- ### Figures
 
 The figures produced by the code are saved as PDF files. The data used to generate the figures are saved as CSV files. All the files are located in the `results` folder, each corresponding to a specific figure in the paper:
 
@@ -110,7 +114,7 @@ run('main.m')
 
 ## Software
 
-The results were obtained using MATLAB R2024b on macOS Sequoia (Apple silicon).
+The results were obtained using MATLAB R2024b on macOS Tahoe (Apple silicon).
 
 ## License
 
