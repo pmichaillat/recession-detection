@@ -74,7 +74,7 @@ The scripts display the tables in the MATLAB command window and save the tables 
 
 ## Intermediate data
 
-Some of the intermediate results produced by the code are saved as MATLAB files in the `intermediate` folder. This results take some time to produce (about 1 hour) so they are provided here for reference. They can be used to skip the beginning of the code (classifier construction) and focus on the later part of the code (recession detection).
+Some of the intermediate results produced by the code are saved as MATLAB files in the `intermediate` folder. These results take some time to produce (about 1 hour) so they are provided here for reference. They can be used to skip the beginning of the code (classifier construction) and instead focus on the later part of the code (recession detection).
 
 ## Output
 
