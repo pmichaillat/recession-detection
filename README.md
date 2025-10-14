@@ -15,7 +15,7 @@ This project implements a machine learning approach to real-time recession detec
 3. Selects optimal classifiers on the anticipation-precision frontier
 4. Builds a high-precision ensemble from frontier classifiers
 5. Computes recession probabilities using the ensemble's error distribution
-6. Validates the approach through placebo tests and multiple backtests (1940–2015)
+6. Validates the approach through placebo tests and multiple backtests (1965–2015)
 
 The approach balances early recession detection (anticipation) with consistent timing (precision), providing probabilistic assessments suitable for real-time economic monitoring.
 
@@ -122,7 +122,6 @@ Some intermediate results produced by the code are saved as MATLAB files (`.mat`
 - `ensemble_1995.mat` - Perfect classifiers for 1995 backtest
 - `ensemble_1985.mat` - Perfect classifiers for 1985 backtest
 - `ensemble_1965.mat` - Perfect classifiers for 1965 backtest
-- `ensemble_1940.mat` - Perfect classifiers for 1940 backtest
 
 ### Content of each matrix
 
@@ -162,7 +161,7 @@ All figures are saved in two formats:
 
 #### Backtest figures
 
-For each backtest year (2015, 2005, 1995, 1985, 1965, 1940):
+For each backtest year (2015, 2005, 1995, 1985, 1965):
 
 - `figure_frontier_[year].pdf` - Frontier for that training period
 - `figure_frontier_[year]_precision.pdf` - Zoomed frontier view

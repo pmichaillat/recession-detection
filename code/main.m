@@ -17,7 +17,7 @@
 % 5. Ensemble construction: Build high-precision ensemble from frontier classifiers
 % 6. Probability computation: Calculate recession probabilities for full sample
 % 7. Placebo test: Validate approach using non-recession events (First Ladies deaths)
-% 8. Backtests: Test robustness across multiple training periods (1940-2015)
+% 8. Backtests: Test robustness across multiple training periods (1965-2015)
 %
 % Output:
 % * Figures: Raw data, indicators, frontier, ensemble classifiers, probabilities
@@ -180,7 +180,7 @@ tabulateEnsemble(parametersEnsemblePlacebo, thresholdEnsemblePlacebo, errorsEnse
 
 %% Series of backtests: test robustness across different training periods
 
-for backtest = [2015, 2005, 1995, 1985, 1965, 1940]
+for backtest = [2015, 2005, 1995, 1985, 1965]
 
 	% Set training period end date
 	endTrainingBacktest = backtest - 1/12;
