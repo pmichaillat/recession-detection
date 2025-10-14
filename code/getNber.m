@@ -43,8 +43,8 @@ startArray = peakArray + calmonths(1);
 endArray = troughArray;
 
 %% Translate dates into decimal year format
-startMat = round(year(startArray) + (month(startArray) - 1) ./ 12, 2); 
-endMat = round(year(endArray) + (month(endArray) - 1) ./ 12, 2);
+startMat = year(startArray) + (month(startArray) - 1) ./ 12; 
+endMat = year(endArray) + (month(endArray) - 1) ./ 12;
 
 %% Return subset of data
 % Filter for recessions with start dates within requested range

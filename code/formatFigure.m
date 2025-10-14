@@ -16,12 +16,15 @@
 % * Transparency levels
 % * Marker sizes
 % * Line, scatter, band, and area plot properties
-% * Axis configurations (dataAxis, trainingAxis, detectionAxis)
+% * Axis configurations (dataAxis)
+%
+% Output:
+% * format - structure containing all formatting properties for plotting functions
 %
 % Notes:
 % * This script should be run before creating any figures
-% * The predefined cell arrays can be applied using plot(..., property{:})
-% * Axis properties assume startDate, endDate, and endTraining are defined
+% * The predefined cell arrays can be applied using plot(..., format.property{:})
+% * Axis properties assume beginDate and endDate are defined
 
 %% Set default properties for figures
 % Define figure dimensions in inches (16:9 aspect ratio)
@@ -202,5 +205,51 @@ grayBand = {
 % Full data range axis
 dataAxis = {
 	'XLim', [beginDate, endDate], ...
-	'XTick', [1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020]
+	'XTick', [1930 : 10 : 2020]
 };
+
+%% Predefine recession dates
+[startNber, endNber] = getNber(inputFolder, beginDate, endDate);
+
+%% Package all formatting properties into a structure
+format.orange = orange;
+format.purple = purple;
+format.pink = pink;
+format.purpleStandard = purpleStandard;
+format.purpleLight = purpleLight;
+format.purpleMedium = purpleMedium;
+format.pinkLight = pinkLight;
+format.pinkMedium = pinkMedium;
+format.grayLight = grayLight;
+format.grayMedium = grayMedium;
+format.grayDark = grayDark;
+format.thick = thick;
+format.medium = medium;
+format.thin = thin;
+format.hair = hair;
+format.transparency = transparency;
+format.diameter = diameter;
+format.grayArea = grayArea;
+format.orangeLine = orangeLine;
+format.orangeMediumLine = orangeMediumLine;
+format.orangeThinLine = orangeThinLine;
+format.orangeDashLine = orangeDashLine;
+format.orangeDashMediumLine = orangeDashMediumLine;
+format.purpleLine = purpleLine;
+format.purpleMediumLine = purpleMediumLine;
+format.purpleThinLine = purpleThinLine;
+format.pinkLine = pinkLine;
+format.pinkMediumLine = pinkMediumLine;
+format.pinkThinLine = pinkThinLine;
+format.orangeScatter = orangeScatter;
+format.purpleScatter = purpleScatter;
+format.purpleOpaqueBand = purpleOpaqueBand;
+format.purpleBand = purpleBand;
+format.purpleTransparentBand = purpleTransparentBand;
+format.orangeOpaqueBand = orangeOpaqueBand;
+format.orangeBand = orangeBand;
+format.orangeTransparentBand = orangeTransparentBand;
+format.grayBand = grayBand;
+format.dataAxis = dataAxis;
+format.startNber = startNber;
+format.endNber = endNber;

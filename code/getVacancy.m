@@ -62,7 +62,7 @@ dateEnd = max(year(dateArray) + (month(dateArray) - 1) ./ 12);
 
 % Create monthly date vector from 1919M1 to present in decimal years
 % (e.g., 1919.0 = Jan 1919, 1919.083 = Feb 1919, etc.)
-dateMat = round([1919 : 1/12 : dateEnd], 2);
+dateMat = [1919 : 1/12 : dateEnd];
 
 %% Return subset of data
 % Extract and return requested date range

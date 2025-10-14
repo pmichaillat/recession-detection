@@ -28,7 +28,7 @@
 % * Recession periods are indicated by gray shaded regions
 
 %% Specify figure ID
-figureId = 'Data';
+figureId = 'data';
 
 %% Produce figure
 % Set up figure window
@@ -45,7 +45,7 @@ ax.YTick = log([0.005, 0.01, 0.02, 0.04, 0.08, 0.15, 0.3]);
 ax.YTickLabel = ["0.5%"; "1%"; "2%"; "4%"; "8%"; "15%"; "30%"];
 ax.YLabel.String = 'Share of labor force (log scale)';
 
-% Paint recession areas
+% Shade NBER recessions
 xregion(startNber, endNber, grayArea{:});
 
 % Plot unemployment rate in purple
@@ -55,7 +55,7 @@ plot(timeline, log(uRaw), purpleLine{:})
 plot(timeline, log(vRaw), orangeLine{:})
 
 % Save figure as PDF
-print('-dpdf', fullfile(outputFolder, ['figure', figureId, '.pdf']))
+print('-dpdf', fullfile(outputFolder, ['figure_', figureId, '.pdf']))
 
 %% Save figure data
 % Define column headers
@@ -65,4 +65,4 @@ header = {'Year', 'Unemployment rate (%)', 'Vacancy rate (%)'};
 data = [timeline, uRaw, vRaw];
 
 % Write data to CSV file
-writetable(array2table(data, 'VariableNames', header), fullfile(outputFolder, ['figure', figureId, '.csv']))
+writetable(array2table(data, 'VariableNames', header), fullfile(outputFolder, ['figure_', figureId, '.csv']))

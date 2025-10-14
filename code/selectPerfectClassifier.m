@@ -21,7 +21,7 @@
 % Notes:
 % * A recession starts when indicator crosses above threshold during expansion
 % * A recession ends when indicator returns to zero
-% * Threshold values tested range from 0.0001 to 0.5 in steps of 0.0001
+% * Threshold values tested range from 0.0001 to 0.25 in steps of 0.0001
 % * Perfect classifiers are those detecting exactly nNber recessions in training period
 %
 % Example:
@@ -41,7 +41,7 @@ nIndicator = size(indicator, 2);
 
 %% For all thresholds, select classifiers generating nNber recessions
 % Set threshold values to test
-thresholdMat = [0.0001 : 0.0001 : 0.5];
+thresholdMat = [0.0001 : 0.0001 : 0.25];
 nThreshold = numel(thresholdMat);
 
 % Preallocate arrays for results

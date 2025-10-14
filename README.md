@@ -6,6 +6,19 @@ This repository contains the code and data accompanying the paper "Early and Acc
 
 The paper is available at https://pascalmichaillat.org/17/.
 
+## Overview
+
+This project implements a machine learning approach to real-time recession detection using US labor market indicators. The methodology:
+
+1. Constructs 95,832 recession indicators by systematically transforming unemployment and vacancy data through smoothing, curvature adjustment, turning point detection, and mixing operations
+2. Identifies "perfect classifiers" that detect the correct number of recessions in a training period (1929–2021)
+3. Selects optimal classifiers on the anticipation-precision frontier
+4. Builds a high-precision ensemble from frontier classifiers
+5. Computes recession probabilities using the ensemble's error distribution
+6. Validates the approach through placebo tests and multiple backtests (1940–2015)
+
+The approach balances early recession detection (anticipation) with consistent timing (precision), providing probabilistic assessments suitable for real-time economic monitoring.
+
 ## Input data
 
 The raw data used by the code to produce the results in the paper are stored as CSV files in the `input` folder.
@@ -24,101 +37,238 @@ The raw data used by the code to produce the results in the paper are stored as 
 	+ Source: [BLS (2025b)](https://fred.stlouisfed.org/series/JTSJOL)
 + `UNEMPLOY.csv` - US unemployment level, 1948–2025
 	+ Source: [BLS (2025c)](https://fred.stlouisfed.org/series/UNEMPLOY)
-	
+
 ## Code
 
 The results in the paper are obtained using MATLAB. The MATLAB code is located in the `code` folder.
 
-<!-- 
 ### Main script
 
-The main script, `main.m`, orchestrates the production of the results in the paper. The script collects the raw data, performs the computations, and produces the 8 figures and 2 tables presented in the paper.
+The main script, `main.m`, orchestrates the production of the results in the paper. The script:
 
-### Computations
+1. Loads and processes raw labor market data (1929–2025)
+2. Constructs 95,832 recession indicators through systematic transformations
+3. Identifies perfect classifiers on the training set (1929–2021)
+4. Selects classifiers on the anticipation-precision frontier
+5. Builds a high-precision ensemble
+6. Computes recession probabilities
+7. Performs placebo tests using First Ladies' death dates
+8. Conducts backtests for six different training periods
 
-The main script performs the computations in three steps, using the following scripts:
+### Runtime
 
-+ `getData.m` - Load data on US unemployment, job vacancies, and recessions
-+ `computeIndicator.m` - Compute minimum indicator
-+ `detectRecessions.m` -  Detect recessions with Michez rule
+The complete script takes approximately 6–8 hours to run due to the computational intensity of the classifier selection process. Intermediate results are saved to allow partial execution.
 
-The output from the computations is stored in variables in the MATLAB workspace. These variables are then used to produce tables and figures.
+### Key functions
 
-### Figure production
+#### Data loading functions
 
-Before producing the figures, the main script calls the `formatFigure.m` script to preformat figures and predefine figure properties. The figure properties are stored in variables in the MATLAB workspace.
+- `getUnemployment.m` - Loads and splices historical unemployment data (1890–2025)
+- `getVacancy.m` - Loads and splices historical vacancy data (1919–2025)
+- `getIp.m` - Loads industrial production index data
+- `getNber.m`  - Load and process NBER recession dates
 
-The main script then produces the figures using a collection of scripts:
+#### Indicator construction functions
 
-+ `figure1.m` - Produce figure 1
-+ `figure2.m` - Produce figure 2
-+ `figure3.m` - Produce figure 3
-+ `figure4.m` - Produce figure 4
-+ `figure5.m` - Produce figure 5
-+ `figure6.m` - Produce figure 6
-+ `figure7.m` - Produce figure 7
-+ `figure8.m` - Produce figure 8
+- `buildIndicator.m` - Constructs 4,356 indicators from a single time series through:
+  - Smoothing: 22 methods (SMA windows 0–11 months, EMA weights 0.1–1.0)
+  - Curvature: 11 Box-Cox-like transformations (0 = log, 1 = linear)
+  - Turning point detection: 18 detection windows (1–18 months)
+  - Total basic indicators: 22 (smoothing)  × 11 (curving) × 18 (turning)  = 4,356
+- `mixIndicator.m` - Combines unemployment and vacancy indicators using linear and minmax mixing (11 mixing weights × 2 methods)
+- Total indicators: 4,356 (basic indicators) × 22 (mixing) = 95,832
 
-The scripts display the figures in MATLAB figure windows, save each figure as a PDF file, and save the underlying data as CSV files. 
+#### Classifier selection functions
 
-### Table production
+- `selectPerfectClassifier.m` - Identifies indicator-threshold combinations that detect exactly the correct number of recessions in the training period (computationally intensive: ~2 hours per training period)
+- `selectFrontierClassifier.m` - Constructs the anticipation-precision Pareto frontier by selecting classifiers that minimize mean anticipation for each precision level
 
-Next, the main script produces the tables using the following scripts:
+#### Analysis functions
 
-+ `table1.m` - Produce table 1
-+ `table2.m` - Produce table 2
+- `computeRecessionProbability.m` - Calculates recession probabilities using ensemble classifiers and their error distributions
 
-The scripts display the tables in the MATLAB command window and save the tables as CSV file. The scripts also generate numerical results associated with the tables. The results are displayed in the command window and saved in Markdown files.
+#### Tabulating and plotting functions
 
- -->
+- `tabulateEnsemble.m` - Creates tables of ensemble parameters and performance metrics
+- `plotData.m` - Plots raw unemployment and vacancy rates
+- `plotIndicator.m` - Visualizes all indicator variations
+- `plotFrontier.m` - Shows anticipation-precision frontier
+- `plotEnsemble.m` - Displays ensemble classifiers and thresholds
+- `plotProbability.m` - Plots individual and aggregate recession probabilities
+
+#### Utility functions
+
+- `flatten.m` - Reshapes multidimensional arrays efficiently
+- `formatFigure.m` - Configures default figure properties and defines plotting styles
+
+### Function documentation
+
+All functions include comprehensive header documentation following MATLAB best practices:
+- Syntax with all input/output arguments
+- Detailed description of functionality
+- Parameter specifications with units and ranges
+- Usage examples
+- Notes on computational requirements or special cases
 
 ## Intermediate data
 
-Some of the intermediate results produced by the code are saved as MATLAB files in the `intermediate` folder. These results take some time to produce (about 1 hour) so they are provided here for reference. They can be used to skip the beginning of the code (classifier construction) and instead focus on the later part of the code (recession detection).
+Some intermediate results produced by the code are saved as MATLAB files (`.mat`) in the `intermediate` folder. These results take significant time to produce (1–2 hours per file) and are provided for reference.
+
+### List of intermediate data
+
+- `ensemble.mat` - Perfect classifiers for main analysis (training: 1929–2021)
+- `ensemble_2015.mat` - Perfect classifiers for 2015 backtest
+- `ensemble_2005.mat` - Perfect classifiers for 2005 backtest
+- `ensemble_1995.mat` - Perfect classifiers for 1995 backtest
+- `ensemble_1985.mat` - Perfect classifiers for 1985 backtest
+- `ensemble_1965.mat` - Perfect classifiers for 1965 backtest
+- `ensemble_1940.mat` - Perfect classifiers for 1940 backtest
+
+### Content of each matrix
+
+- `indexPerfect` - Column indices of perfect classifiers in the indicator matrix
+- `thresholdPerfect` - Optimal thresholds for each perfect classifier
+- `startPerfect` - Detected recession start dates for each classifier
+
+### Usage of intermediate data
+
+To skip the computationally intensive classifier selection step, comment the `selectPerfectClassifier()` and `save()` lines, and uncomment the appropriate `load()` line in `main.m`. This allows you to skip the selection of perfect classifiers and start analysis from the frontier selection stage. This step can also be skipped in each backtest.
 
 ## Output data
 
-The results produced by the code from the raw data are stored as CSV and PDF files in the `output` folder.
+The results produced by the code from the raw data are stored as PDF and CSV files in the `output` folder.
 
-<!-- ### Figures
+### Figures
 
-The figures produced by the code are saved as PDF files. The data used to generate the figures are saved as CSV files. All the files are located in the `results` folder, each corresponding to a specific figure in the paper:
+All figures are saved in two formats:
+- PDF files - High-quality vector graphics for publication
+- CSV files - Underlying data for replication or further analysis
 
-+ `figure1.pdf`, `figure1.csv` - Figure 1
-+ `figure2.pdf`, `figure2.csv` - Figure 2
-+ `figure3.pdf`, `figure3.csv` - Figure 3
-+ `figure4.pdf`, `figure4.csv` - Figure 4
-+ `figure5.pdf`, `figure5.csv` - Figure 5
-+ `figure6.pdf`, `figure6.csv` - Figure 6
-+ `figure7.pdf`, `figure7.csv` - Figure 7
-+ `figure8.pdf`, `figure8.csv` - Figure 8
+#### Main analysis figures
+
+- `figure_data.pdf` - Raw unemployment and vacancy rates (1929–2025)
+- `figure_unemployment.pdf` - All 4,356 unemployment indicator variations
+- `figure_vacancy.pdf` - All 4,356 vacancy indicator variations
+- `figure_frontier.pdf` - Anticipation-precision frontier with all perfect classifiers
+- `figure_frontier_precision.pdf` - Zoomed view of high-precision segment of frontier
+- `figure_ensemble_[1-N].pdf` - Individual ensemble classifier plots
+- `figure_ensemble.pdf` - Combined plot of normalized ensemble classifiers
+- `figure_probability_training.pdf` - Recession probabilities on training period
+- `figure_probability_testing.pdf` - Recession probabilities on testing period
+
+#### Placebo test figures
+
+- `figure_frontier_placebo.pdf` - Anticipation-precision frontier using First Ladies' death dates for placebo test
+
+#### Backtest figures
+
+For each backtest year (2015, 2005, 1995, 1985, 1965, 1940):
+
+- `figure_frontier_[year].pdf` - Frontier for that training period
+- `figure_frontier_[year]_precision.pdf` - Zoomed frontier view
+- `figure_ensemble_[year]_[1-N].pdf` - Individual classifiers
+- `figure_ensemble_[year].pdf` - Combined ensemble
+- `figure_probability_[year]_training.pdf` - Recession probabilities on training period
+- `figure_probability_[year]_testing.pdf` - Recession probabilities on backtesting period
 
 ### Tables
 
-The tables produced by the code are saved as CSV files. The numerical results associated with each table are saved in Markdown files. All the files are located in the `results` folder, each corresponding to a specific table in the paper:
+All tables are saved as CSV files with complete parameter specifications and performance metrics.
 
-+ `table1.csv`, `table1.md` - Table 1
-+ `table2.csv`, `table2.md` - Table 2
+### Main analysis tables
 
- -->
+- `table_ensemble.csv` - Ensemble classifier parameters and errors. Columns: Smoothing method, smoothing parameter, curving parameter, turning parameter, mixing method, mixing parameter, threshold, standard error, mean error, min error, max error
+
+### Placebo test tables
+
+- `table_ensemble_placebo.csv` - Top 10 placebo classifiers
+
+### Backtest tables
+
+ For each backtest year:
+
+- `table_ensemble_[year].csv` - Ensemble parameters for that training period
 
 ## Usage
 
-1. Clone the repository to your local machine using Git or by downloading the ZIP file.
+### Prerequisites
+
+- MATLAB R2019b or later (some functions require recent MATLAB features)
+- Sufficient memory for large matrix operations (16GB+ RAM recommended)
+- Approximately 10GB free disk space for intermediate and output files
+
+### Running the analysis
+
+1. Clone the repository to your local machine using Git or by downloading the ZIP file:
+```bash
+git clone https://github.com/pmichaillat/recession-detection.git
+```
 
 2. Open MATLAB and set the `code` folder as the current folder.
 
-3. To generate the figures and tables presented in the paper, run the following command in the MATLAB command window:
+3. To generate all the results, run the following command in the MATLAB command window:
 
 ```matlab
 run('main.m')
 ```
 
-4. By default, the main script overwrites the files in the `output` folder. To preserve existing files, make a copy of the folder before running the script.
+4. By default, the main script overwrites the files in the `intermediate` and `output` folders. To preserve existing files, make a copy of the folders before running the script.
+
+5. Important note: The script takes 6–8 hours to run completely due to classifier selection. Progress is displayed in the command window.
+
+### Partial execution
+
+To skip the computationally intensive selection of perfect classifiers, use pre-computed results:
+
+1. Ensure intermediate `.mat` files exist in `intermediate/`.
+
+2. In `main.m`, comment the `selectPerfectClassifier()` and `save()` lines, and uncomment the appropriate `load()` line in `main.m`. This allows you to skip the selection of perfect classifiers and start analysis from the frontier selection stage. This step can also be skipped in each backtest.
+
+3. Run the `main.m` script. It will use saved classifiers instead of recomputing them.
+
+### Customization
+
+#### Modify training period
+
+- Edit `beginTraining` and `endTraining` in `main.m`
+
+#### Adjust ensemble precision threshold
+
+- Modify `stdErrorMax` in `main.m`
+- Lower values = more precise but fewer classifiers
+- Higher values = more classifiers but less precise
+
+#### Change backtest periods
+
+- Edit the backtest year array in `main.m`
+- Add or remove years as desired
+
+#### Customize figure formatting
+
+- Modify properties in `formatFigure.m`
+- Adjust colors, line widths, fonts, etc.
 
 ## Software
 
-The results were obtained using MATLAB R2024b on macOS Tahoe (Apple silicon).
+The results were obtained using MATLAB R2024b on macOS Tahoe (Apple silicon). The code should work on:
+- MATLAB R2019b or later
+- Windows, macOS, or Linux
+- Both Intel and Apple silicon processors
+- No required toolboxes. All code uses base MATLAB functions.
+
+## Citation
+
+If you use this code or data in your research, please cite:
+
+```latex
+@techreport{Michaillat2025,
+  author = {Pascal Michaillat},
+  title = {Early and Accurate Recession Detection Using Classifiers on the Anticipation-Precision Frontier},
+  year = {2025},
+  number = {arXiv:2506.09664},
+  url = {https://doi.org/10.48550/arXiv.2506.09664}
+}
+```
 
 ## License
 

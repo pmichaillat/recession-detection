@@ -56,7 +56,7 @@ dateEnd = max(year(dateArray) + (month(dateArray) - 1) ./ 12);
 
 % Create monthly date vector from 1890M1 to present in decimal years
 % (e.g., 1890.0 = Jan 1890, 1890.083 = Feb 1890, etc.)
-dateMat = round([1890 : 1/12 : dateEnd], 2);
+dateMat = [1890 : 1/12 : dateEnd];
 
 %% Return subset of data
 % Extract and return requested date range

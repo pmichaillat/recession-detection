@@ -1,7 +1,7 @@
 % buildIndicator - Construct recession indicators from raw economic data
 %
 % Syntax:
-%   [dataIndicator, smoothingMethod, smoothingParameter, curvingParameter, turningParameter] = buildIndicator(rawData, procyclical)
+%   [dataIndicator, dataParameters] = buildIndicator(rawData, procyclical)
 %
 % Description:
 % This function transforms raw economic time series data into recession indicators
@@ -13,14 +13,12 @@
 % * rawData - column vector, raw monthly time series data
 % * procyclical - scalar (0 or 1), indicates series behavior:
 %   0 = countercyclical (increases in recessions, e.g., unemployment)
-%   1 = procyclical (decreases in recessions, e.g., employment)
+%   1 = procyclical (decreases in recessions, e.g., vacancy)
 %
 % Output arguments:
 % * dataIndicator - matrix [nMonth x nIndicators], all indicator variations
-% * smoothingMethod - cell array, smoothing method labels ('SMA' or 'EMA')
-% * smoothingParameter - matrix, smoothing window/weight parameters
-% * curvingParameter - matrix, curvature transformation parameters
-% * turningParameter - matrix, turning point detection window parameters
+% * dataParameters - cell array [4 x nIndicators], transformation parameters with rows:
+%   (1) smoothing method, (2) smoothing parameter, (3) curving parameter, (4) turning parameter
 %
 % Notes:
 % * Smoothing methods: Simple moving average (SMA) with windows 0-11 months,
@@ -28,19 +26,17 @@
 % * Curvature transformation: Box-Cox-like transformation with parameter 0-1
 %   (0 = log, 1 = linear)
 % * Turning point detection: Difference from recent minimum (countercyclical)
-%   or maximum (procyclical) over windows of 1, 3, 6, ..., 36 months
-% * Total indicators per raw series: 22 smoothing × 11 curving × 13 turning = 3,146
+%   or maximum (procyclical) over windows of 1–18 months
+% * Total indicators per raw series: 22 smoothing × 11 curving × 18 turning = 4,356
 %
 % Example:
-%   [indicators, methods, smooth, curve, turn] = buildIndicator(unemploymentRate, 0);
+%   [indicators, parameters] = buildIndicator(unemploymentRate, 0);
 
-function [dataIndicator, smoothingMethod, smoothingParameter, curvingParameter, turningParameter] = buildIndicator(rawData, procyclical)
+function [dataIndicator, dataParameters] = buildIndicator(rawData, procyclical)
 
 %% Validate input arguments
 % Check that procyclical is either 0 or 1
-if ~ismember(procyclical, [0, 1])
-	error('procyclical must be 0 (countercyclical) or 1 (procyclical)');
-end
+assert(ismember(procyclical, [0, 1]), 'procyclical must be 0 (countercyclical) or 1 (procyclical)');
 
 % Compute number of monthly observations
 nMonth = numel(rawData);
@@ -61,8 +57,8 @@ for iAlpha = 1 : nAlpha
 end
 
 % Create tags for smoothing method and parameters
-smaMethod = repmat({'SMA'}, nMonth, nAlpha);
-smaParameter = repmat(alphaMat, nMonth, 1);
+smaMethod = repmat({'SMA'}, 1, nAlpha);
+smaParameter = alphaMat;
 
 %% Smooth data with exponentially weighted moving average
 % Set parameters: decay weights from 0.1 to 1.0
@@ -80,8 +76,8 @@ for iBeta = 1 : nBeta
 end
 
 % Create tags for smoothing method and parameters
-emaMethod = repmat({'EMA'}, nMonth, nBeta);
-emaParameter = repmat(betaMat, nMonth, 1);
+emaMethod = repmat({'EMA'}, 1, nBeta);
+emaParameter = betaMat;
 
 %% Stack smoothing results and tags
 dataSmooth = [dataSma, dataEma];
@@ -113,15 +109,15 @@ end
 
 % Create and expand tags for curvature parameters
 gammaMat = reshape(gammaMat, [1, 1, nGamma]);
-curvingParameter = repmat(gammaMat, nMonth, nAlpha + nBeta);
+curvingParameter = repmat(gammaMat, 1, nAlpha + nBeta);
 
 % Expand smoothing tags to match new dimensions
 smoothingMethod = repmat(smoothingMethod, 1, 1, nGamma);
 smoothingParameter = repmat(smoothingParameter, 1, 1, nGamma);
 
 %% Detect turning points
-% Set parameters: detection windows from 1 to 36 months
-deltaMat = [1, 3 : 3 : 36];
+% Set parameters: detection windows from 1 to 18 months
+deltaMat = [1 : 18];
 nDelta = numel(deltaMat);
 
 % Preallocate array for indicators
@@ -135,7 +131,7 @@ for iDelta = 1 : nDelta
 		% Higher values signal recession (series has increased from recent low)
 		dataIndicator(:, :, :, iDelta) = dataCurved - movmin(dataCurved, [delta, 0]);
 	elseif procyclical == 1
-		% Procyclical series (e.g., employment): distance from recent maximum
+		% Procyclical series (e.g., vacancy): distance from recent maximum
 		% Higher values signal recession (series has decreased from recent high)
 		dataIndicator(:, :, :, iDelta) = movmax(dataCurved, [delta, 0]) - dataCurved;
 	end
@@ -143,7 +139,7 @@ end
 
 % Create and expand tags for turning point parameters
 deltaMat = reshape(deltaMat, [1, 1, 1, nDelta]);
-turningParameter = repmat(deltaMat, nMonth, nAlpha + nBeta, nGamma);
+turningParameter = repmat(deltaMat, 1, nAlpha + nBeta, nGamma);
 
 % Expand all tags to match final dimensions
 smoothingMethod = repmat(smoothingMethod, 1, 1, 1, nDelta);
@@ -151,11 +147,17 @@ smoothingParameter = repmat(smoothingParameter, 1, 1, 1, nDelta);
 curvingParameter = repmat(curvingParameter, 1, 1, 1, nDelta);
 
 %% Flatten matrices for output
-% Convert 4D arrays to 2D matrices (nMonth × nIndicators)
+% Convert 4D arrays to 2D matrices (nMonth × nIndicators for data, 1 × nIndicators for parameters)
 dataIndicator = flatten(dataIndicator);
 smoothingMethod = flatten(smoothingMethod);
 smoothingParameter = flatten(smoothingParameter);
 curvingParameter = flatten(curvingParameter);
 turningParameter = flatten(turningParameter);
+
+% Create cell array with all parameters
+dataParameters = [smoothingMethod;
+                  num2cell(smoothingParameter);
+                  num2cell(curvingParameter);
+                  num2cell(turningParameter)];
 
 end

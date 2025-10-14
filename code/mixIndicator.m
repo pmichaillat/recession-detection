@@ -1,7 +1,7 @@
 % mixIndicator - Combine two sets of indicators using linear and minmax mixing
 %
 % Syntax:
-%   [indicator, tagSmoothingMethod, tagSmoothingParameter, tagCurvingParameter, tagTurningParameter, tagMixingMethod, tagMixingParameter] = mixIndicator(indicator1, indicator2, tagSmoothingMethod, tagSmoothingParameter, tagCurvingParameter, tagTurningParameter)
+%   [indicator, parameters] = mixIndicator(indicator1, indicator2, dataParameters)
 %
 % Description:
 % This function combines two sets of indicators (e.g., from unemployment and
@@ -11,31 +11,33 @@
 % Input arguments:
 % * indicator1 - matrix [nMonth x nIndicators], first set of indicators
 % * indicator2 - matrix [nMonth x nIndicators], second set of indicators
-% * tagSmoothingMethod - cell array, smoothing method labels from buildIndicator
-% * tagSmoothingParameter - matrix, smoothing parameters from buildIndicator
-% * tagCurvingParameter - matrix, curvature parameters from buildIndicator
-% * tagTurningParameter - matrix, turning point parameters from buildIndicator
+% * dataParameters - cell array [4 x nIndicators], transformation parameters from buildIndicator
 %
 % Output arguments:
 % * indicator - matrix [nMonth x nMixedIndicators], all mixed indicator variations
-% * tagSmoothingMethod - cell array, expanded smoothing method labels
-% * tagSmoothingParameter - matrix, expanded smoothing parameters
-% * tagCurvingParameter - matrix, expanded curvature parameters
-% * tagTurningParameter - matrix, expanded turning point parameters
-% * tagMixingMethod - cell array, mixing method labels ('linear' or 'minmax')
-% * tagMixingParameter - matrix, mixing weight parameters (0 to 1)
+% * parameters - cell array [6 x nMixedIndicators], all transformation parameters with rows:
+%   (1) smoothing method, (2) smoothing parameter, (3) curving parameter,
+%   (4) turning parameter, (5) mixing method, (6) mixing parameter
 %
 % Notes:
 % * Linear mixing: z = zeta*x + (1-zeta)*y (convex combination)
 % * Minmax mixing: z = zeta*min(x,y) + (1-zeta)*max(x,y) (robust to outliers)
 % * Mixing parameter zeta ranges from 0 to 1 in steps of 0.1 (11 values)
-% * Total output: 2 mixing methods × 11 parameters × nIndicators per input
+% * Total output: 2 mixing methods × 11 parameters × nIndicators = 22 × nIndicators
 % * Both input indicator sets must have the same dimensions
 %
 % Example:
-%   [mixed, sm, sp, cp, tp, mm, mp] = mixIndicator(uIndicators, vIndicators, sm, sp, cp, tp);
+%   [mixed, params] = mixIndicator(uIndicator, vIndicator, uParams);
 
-function [indicator, tagSmoothingMethod, tagSmoothingParameter, tagCurvingParameter, tagTurningParameter, tagMixingMethod, tagMixingParameter] = mixIndicator(indicator1, indicator2, tagSmoothingMethod, tagSmoothingParameter, tagCurvingParameter, tagTurningParameter)
+function [indicator, parameters] = mixIndicator(indicator1, indicator2, dataParameters)
+
+%% Check arguments to the function
+
+% Verify that indicators have same size
+assert(isequal(size(indicator1), size(indicator2)), 'Indicator matrices must have the same size');
+
+% Verify that parameterization is correct
+assert(isequal(size(indicator1, 2), size(dataParameters, 2)), 'Indicator matrix and parameter matrix must have the same number of columns');
 
 %% Produce linear and minmax mixtures of indicators
 % Define minmax mixing function
@@ -65,46 +67,41 @@ for iZeta = 1 : nZeta
 	minmaxIndicator(:, :, iZeta) = mixing(indicator1, indicator2, zeta);
 end
 
-% Create tags for mixing methods and parameters
-zetaMat = reshape(zetaMat, [1, 1, nZeta]);
-tagLinear = repmat({'linear'}, nMonth, nIndicator, nZeta);
-tagMinmax = repmat({'minmax'}, nMonth, nIndicator, nZeta);
-tagLinearParameter = repmat(zetaMat, nMonth, nIndicator);
-tagMinmaxParameter = repmat(zetaMat, nMonth, nIndicator);
+% Create mixing parameter tags
+mixingParameter = repmat(reshape(zetaMat, [1, 1, nZeta]), 1, nIndicator);
 
-% Expand existing tags to match new dimensions
-tagSmoothingMethod = repmat(tagSmoothingMethod, 1, 1, nZeta);
-tagSmoothingParameter = repmat(tagSmoothingParameter, 1, 1, nZeta);
-tagCurvingParameter = repmat(tagCurvingParameter, 1, 1, nZeta);
-tagTurningParameter = repmat(tagTurningParameter, 1, 1, nZeta);
+% Create mixing method tags
+linearMethod = repmat({'linear'}, 1, nIndicator, nZeta);
+minmaxMethod = repmat({'minmax'}, 1, nIndicator, nZeta);
+
+% Expand existing parameters to match mixing dimension
+dataParameters = repmat(dataParameters, 1, 1, nZeta);
 
 %% Flatten matrices before stacking
 % Flatten indicator results
 linearIndicator = flatten(linearIndicator);
 minmaxIndicator = flatten(minmaxIndicator);
 
-% Flatten all tags
-tagSmoothingMethod = flatten(tagSmoothingMethod);
-tagSmoothingParameter = flatten(tagSmoothingParameter);
-tagCurvingParameter = flatten(tagCurvingParameter);
-tagTurningParameter = flatten(tagTurningParameter);
-tagLinear = flatten(tagLinear);
-tagLinearParameter = flatten(tagLinearParameter);
-tagMinmax = flatten(tagMinmax);
-tagMinmaxParameter = flatten(tagMinmaxParameter);
+% Flatten parameter tags
+linearMethod = flatten(linearMethod);
+minmaxMethod = flatten(minmaxMethod);
+mixingParameter = flatten(mixingParameter);
+dataParameters = flatten(dataParameters);
 
-%% Stack results and tags
+%% Stack results and parameters
 % Stack linear and minmax results horizontally
 indicator = [linearIndicator, minmaxIndicator];
 
 % Stack mixing method tags
-tagMixingMethod = [tagLinear, tagMinmax];
-tagMixingParameter = [tagLinearParameter, tagMinmaxParameter];
+mixingMethod = [linearMethod, minmaxMethod];
 
-% Replicate other tags to match doubled column count
-tagSmoothingMethod = repmat(tagSmoothingMethod, 1, 2);
-tagSmoothingParameter = repmat(tagSmoothingParameter, 1, 2);
-tagCurvingParameter = repmat(tagCurvingParameter, 1, 2);
-tagTurningParameter = repmat(tagTurningParameter, 1, 2);
+% Replicate other parameters to match doubled column count
+dataParameters = repmat(dataParameters, 1, 2);
+mixingParameter = repmat(mixingParameter, 1, 2);
+
+% Create cell array with all parameters
+parameters = [dataParameters;
+              mixingMethod;
+              num2cell(mixingParameter)];
 
 end
