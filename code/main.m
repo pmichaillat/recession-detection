@@ -180,7 +180,7 @@ tabulateEnsemble(parametersEnsemblePlacebo, thresholdEnsemblePlacebo, errorsEnse
 
 %% Series of backtests: test robustness across different training periods
 
-for backtest = [2015, 2005, 1995, 1985, 1965]
+for backtest = [2015, 2005, 1995, 1985, 1975, 1965]
 
 	% Set training period end date
 	endTrainingBacktest = backtest - 1/12;

@@ -53,7 +53,7 @@ The main script, `main.m`, orchestrates the production of the results in the pap
 5. Builds a high-precision ensemble
 6. Computes recession probabilities
 7. Performs placebo tests using First Ladies' death dates
-8. Conducts backtests for six different training periods
+8. Conducts backtests for 6 different training periods
 
 ### Runtime
 
@@ -65,7 +65,6 @@ The complete script takes approximately 6–8 hours to run due to the computatio
 
 - `getUnemployment.m` - Loads and splices historical unemployment data (1890–2025)
 - `getVacancy.m` - Loads and splices historical vacancy data (1919–2025)
-- `getIp.m` - Loads industrial production index data
 - `getNber.m`  - Load and process NBER recession dates
 
 #### Indicator construction functions
@@ -121,6 +120,7 @@ Some intermediate results produced by the code are saved as MATLAB files (`.mat`
 - `ensemble_2005.mat` - Perfect classifiers for 2005 backtest
 - `ensemble_1995.mat` - Perfect classifiers for 1995 backtest
 - `ensemble_1985.mat` - Perfect classifiers for 1985 backtest
+- `ensemble_1975.mat` - Perfect classifiers for 1975 backtest - Too large for GitHub (112MB) so only available upon request
 - `ensemble_1965.mat` - Perfect classifiers for 1965 backtest
 
 ### Content of each matrix
@@ -161,7 +161,7 @@ All figures are saved in two formats:
 
 #### Backtest figures
 
-For each backtest year (2015, 2005, 1995, 1985, 1965):
+For each backtest year (2015, 2005, 1995, 1985, 1975, 965):
 
 - `figure_frontier_[year].pdf` - Frontier for that training period
 - `figure_frontier_[year]_precision.pdf` - Zoomed frontier view
