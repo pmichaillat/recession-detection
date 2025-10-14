@@ -25,13 +25,13 @@
 % * Data files: CSV files with all plotted data, MAT files with training results
 %
 % Requirements:
-% * Input data files in ../../data/current/input/
+% * Input data files in ../input/
 % * MATLAB R2019b or later (for certain functions)
 % * Sufficient memory for large matrix operations (recommend 16GB+ RAM)
 %
 % Notes:
 % * selectPerfectClassifier() is computationally intensive (several hours)
-% * Intermediate results saved to ../../data/current/intermediate/
+% * Intermediate results saved to ../intermediate/
 % * Uncomment load() lines to skip recomputing expensive operations
 % * All figures use formatFigure.m for consistent styling
 
@@ -49,13 +49,13 @@ clc
 %% Prepare analysis
 
 % Specify folder with raw data
-inputFolder = fullfile('..', '..', 'data', 'current', 'input');
+inputFolder = fullfile('..', 'input');
 
 % Specify folder with intermediate MATLAB results
-intermediateFolder = fullfile('..', '..', 'data', 'current', 'intermediate');
+intermediateFolder = fullfile('..', 'intermediate');
 
 % Specify folder with figures and numerical results
-outputFolder = fullfile('..', '..', 'data', 'current', 'output');
+outputFolder = fullfile('..', 'output');
 
 % Set analysis dates and parameters
 beginDate = 1929 + 3/12;
