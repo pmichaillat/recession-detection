@@ -1,6 +1,6 @@
 # Recession Detection Using Classifiers on the Anticipation-Precision Frontier - Code and Data
 
-This repository contains the code and data accompanying the paper "Recession Detection Using Classifiers on the Anticipation-Precision Frontier", written by [Pascal Michaillat](https://pascalmichaillat.org), and posted on [arXiv](https://doi.org/10.48550/arXiv.2506.09664) in July 2025.
+This repository contains the code and data accompanying the paper "Recession Detection Using Classifiers on the Anticipation-Precision Frontier", written by [Pascal Michaillat](https://pascalmichaillat.org), and posted on [arXiv](https://doi.org/10.48550/arXiv.2506.09664) in December 2025.
 
 ## Paper webpage
 
@@ -57,7 +57,7 @@ The main script, `main.m`, orchestrates the production of the results in the pap
 
 ### Runtime
 
-The complete script takes approximately 6–8 hours to run due to the computational intensity of the classifier selection process. Intermediate results are saved to allow partial execution.
+The complete script takes approximately 14–20 hours to run due to the computational intensity of the classifier selection process. Intermediate results are saved to allow partial execution.
 
 ### Key functions
 
@@ -79,7 +79,7 @@ The complete script takes approximately 6–8 hours to run due to the computatio
 
 #### Classifier selection functions
 
-- `selectPerfectClassifier.m` - Identifies indicator-threshold combinations that detect exactly the correct number of recessions in the training period (computationally intensive: ~2 hours per training period)
+- `selectPerfectClassifier.m` - Identifies indicator-threshold combinations that detect exactly the correct number of recessions in the training period (computationally intensive: about 2–3 hours per training period)
 - `selectFrontierClassifier.m` - Constructs the anticipation-precision Pareto frontier by selecting classifiers that minimize mean anticipation for each precision level
 
 #### Analysis functions
@@ -111,7 +111,7 @@ All functions include comprehensive header documentation following MATLAB best p
 
 ## Intermediate data
 
-Some intermediate results produced by the code are saved as MATLAB files (`.mat`) in the `intermediate` folder. These results take significant time to produce (1–2 hours per file) and are provided for reference.
+Some intermediate results produced by the code are saved as MATLAB files (`.mat`) in the `intermediate` folder. These results take significant time to produce (2–3 hours per file) and are provided for reference.
 
 ### List of intermediate data
 
@@ -176,17 +176,17 @@ All tables are saved as CSV files with complete parameter specifications and per
 
 ### Main analysis tables
 
-- `table_ensemble.csv` - Ensemble classifier parameters and errors. Columns: Smoothing method, smoothing parameter, curving parameter, turning parameter, mixing method, mixing parameter, threshold, standard error, mean error, min error, max error
+- `table_ensemble.csv` -  Classifier ensemble parameters and errors. Columns: Smoothing method, smoothing parameter, curving parameter, turning parameter, mixing method, mixing parameter, threshold, standard error, mean error, min error, max error
 
 ### Placebo test tables
 
-- `table_ensemble_placebo.csv` - Top 10 placebo classifiers
+- `table_ensemble_placebo.csv` - Frontier classifiers for the placebo test
 
 ### Backtest tables
 
  For each backtest year:
 
-- `table_ensemble_[year].csv` - Ensemble parameters for that training period
+- `table_ensemble_[year].csv` - Classifier ensemble parameters and errors for that backtest
 
 ## Usage
 
@@ -213,7 +213,7 @@ run('main.m')
 
 4. By default, the main script overwrites the files in the `intermediate` and `output` folders. To preserve existing files, make a copy of the folders before running the script.
 
-5. Important note: The script takes 6–8 hours to run completely due to classifier selection. Progress is displayed in the command window.
+5. Important note: The script takes 14–20 hours to run completely due to classifier selection. Progress is displayed in the command window.
 
 ### Partial execution
 
@@ -265,8 +265,7 @@ If you use this code or data in your research, please cite:
   title = {Recession Detection Using Classifiers on the Anticipation-Precision Frontier},
   year = {2025},
   number = {arXiv:2506.09664},
-  url = {https://doi.org/10.48550/arXiv.2506.09664}
-}
+  url = {https://doi.org/10.48550/arXiv.2506.09664}}
 ```
 
 ## License
