@@ -36,7 +36,7 @@ The raw data used by the code to produce the results in the paper are stored as 
 + `JTSJOL.csv` - US vacancy level, 2001–2025
 	+ Source: [BLS (2025b)](https://fred.stlouisfed.org/series/JTSJOL)
 + `UNEMPLOY.csv` - US unemployment level, 1948–2025
-	+ Source: [BLS (2025c)](https://fred.stlouisfed.org/series/UNEMPLOY)
+	+ Source: [BLS (2025d)](https://fred.stlouisfed.org/series/UNEMPLOY)
 
 ## Code
 
@@ -161,7 +161,7 @@ All figures are saved in two formats:
 
 #### Backtest figures
 
-For each backtest year (2015, 2005, 1995, 1985, 1975, 965):
+For each backtest year (2015, 2005, 1995, 1985, 1975, 1965):
 
 - `figure_frontier_[year].pdf` - Frontier for that training period
 - `figure_frontier_[year]_precision.pdf` - Zoomed frontier view
