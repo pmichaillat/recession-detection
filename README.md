@@ -255,19 +255,6 @@ The results were obtained using MATLAB R2024b on macOS Tahoe (Apple silicon). Th
 - Both Intel and Apple silicon processors
 - No required toolboxes. All code uses base MATLAB functions.
 
-## Citation
-
-If you use this code or data in your research, please cite:
-
-```latex
-@techreport{Michaillat2025,
-  author = {Pascal Michaillat},
-  title = {Recession Detection Using Classifiers on the Anticipation-Precision Frontier},
-  year = {2025},
-  number = {arXiv:2506.09664},
-  url = {https://doi.org/10.48550/arXiv.2506.09664}}
-```
-
 ## License
 
 This repository is licensed under the [MIT License](LICENSE.md).
